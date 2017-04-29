@@ -1,0 +1,26 @@
+{
+  "name": "geekbarains_lessons",
+  "authors": [
+    "websivustot <websivustot@gmail.com>"
+  ],
+  "description": "library",
+  "main": "index.html",
+  "keywords": [
+    "geekbrains",
+    "library"
+  ],
+  "license": "MIT",
+  "homepage": "http://ilma.info/portfolio",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0"
+  }
+}
