@@ -5,16 +5,179 @@
     <meta charset="UTF-8">
     <title>Library</title>
     <script src="vendor/jquery/dist/jquery.min.js"></script>
+    <script src="vendor/bootstrap/dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
 </head>
 
 <body>
-   <div class="container"></div>
+    <div class="container">
+        <div class="library"></div>
+    </div>
+
     <script>
-        $('.container').append($ ('<h1/>', {
-            text: 'hello'
-        }))
+        function getLoginModal() {
+            $('.library').append($('<div/>', {
+                class: 'modal fade loginModal',
+                role: 'dialog'
+            }).append($('<div/>', {
+                class: 'modal-dialog'
+            }).append($('<div/>', {
+                class: 'modal-content'
+            }).append($('<div/>', {
+                class: 'modal-header'
+            }).append($('<h4/>', {
+                text: 'Log in',
+                class: 'modal-title'
+            }))).append($('<div/>', {
+                class: 'modal-body'
+            }).append($('<p/>', {
+                text: 'Please, log in with your name and ID.',
+                class: 'message'
+            })).append($('<form/>').append($('<div/>', {
+                class: 'form-group'
+            }).append($('<label/>', {
+                for: 'userName',
+                class: 'control-label',
+                text: 'Your Name'
+            })).append($('<input/>', {
+                type: 'text',
+                class: 'form-control',
+                name: 'userName'
+            })).append($('<label/>', {
+                for: 'userId',
+                class: 'control-label',
+                text: 'Your ID'
+            })).append($('<input/>', {
+                type: 'text',
+                class: 'form-control',
+                name: 'userId'
+            }))))).append($('<div/>', {
+                class: 'modal-footer'
+            }).append($('<button/>', {
+                type: 'button',
+                class: 'btn btn-primary',
+                'data-dismiss': 'modal',
+                text: 'Login'
+            }).click(function () {
+                $.ajax({
+                    url: 'readers.json',
+                    method: 'GET',
+                    data: {
+                        userId: $('.userId').value
+                    },
+                    dataType: 'json',
+                    cache: false
+                }).done(function (readers) {
+                    console.log(readers);
+                    url = 'index.html';
+                    $.each(readers, function (index, reader) {
+
+                        if ((reader.id == $('input[name=userId]').val()) && (reader.name == $('input[name=userName]').val())) {
+                            url = url + '?userId=' + reader.id;
+                        }
+
+                    })
+                    document.location.href = url;
+                })
+            }))))));
+            $('.loginModal').modal('show');
+        }
+
+        function isLogin() {
+            var userId = false;
+            url = document.location.search;
+            if (url) {
+                var userId = url.slice(1).split('&').filter(function (item) {
+                    return item.split('=')[0] === 'userId';
+                });
+                console.log('userid=' + userId);
+                return userId.pop().split('=').pop();
+            }
+            console.log('userid=' + userId);
+            return userId;
+        }
+
+        function getList(userId, pageNumber = 1) {
+            $('.library').empty();
+            $('.library').append($('<span/>', {
+                class: 'userId',
+                text: 'Your ID: ' + userId
+            }))
+            $.ajax({
+                url: 'books.get.php', // 'books.json'
+                method: 'GET',
+                data: {
+                    id: userId,
+                    page: pageNumber
+                },
+                dataType: 'json',
+                cache: false
+            }).done(function (response) {
+                var books = response.books,
+                    pageCount = response.pages;
+                $('.library').append($('<table/>', {
+                    class: 'table books'
+                }).append($('<tbody/>')).append($('<tr/>').append($('<th/>', {
+                    text: 'Book\'s\xa0ID'
+                })).append($('<th/>', {
+                    text: 'Title'
+                })).append($('<th/>', {
+                    text: 'Publisher'
+                }))))
+                $.each(books, function (index, book) {
+                    if (book) {
+                        $('.books').append($('<tr/>').append($('<td/>', {
+                            text: book.id
+                        })).append($('<td/>', {
+                            text: book.title
+                        })).append($('<td/>', {
+                            text: book.publisher
+                        })))
+                    }
+                });
+                $('.library').append($('<ul/>', {
+                    class: 'pagination'
+                }));
+                for (var i = 1; i <= pageCount; i++) {
+                    var disableClass = '';
+                    if (pageNumber == i) {
+                        disableClass = 'disabled'
+                    }
+                    $('.pagination').append($('<li/>', {
+                        class: disableClass
+                    }).append($('<a/>', {
+                        text: i,
+                        'data-page': i,
+                        href:'#'
+
+
+                    }).click(function () {
+
+                        getList(userId, $(this).text());
+
+                    })))
+                }
+            }).fail(function () {
+                alert('ошибка');
+            });
+
+        }
+        $(function () {
+            $('.container').prepend($('<h1/>', {
+                text: 'Library'
+            }))
+            var userId = isLogin();
+            console.log('userid=' + userId);
+
+            if (!userId) {
+                getLoginModal();
+
+            } else {
+                getList(userId);
+            }
+
+        })
     </script>
 
 </body>

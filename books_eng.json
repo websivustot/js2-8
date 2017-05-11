@@ -1,0 +1,27 @@
+[
+    {
+        "id":"1",
+        "name":"The Idiot by Fyodor Dostoyevsky",
+        "publisher":"Wordsworth Editions Ltd",
+        "announce":"An introduction by Agnes Cardinal, Prince Myshkin returns to Russia from an asylum in Switzerland. As he becomes embroiled in the frantic amatory and financial intrigues which centre around a cast of brilliantly realised characters and which ultimately lead to tragedy, he emerges as a unique combination of the Christian ideal of perfection and Dostoevsky's own views, afflictions and manners. His serene selflessness is contrasted with the worldly qualities of every other character in the novel. Dostoevsky supplies a harsh indictment of the Russian ruling class of his day who have created a world which cannot accomodate the goodness of this idiot.",
+        "image":"book_1.jpg",
+         "taken":"false"
+    },
+    {
+        "id":"2",
+        "name":"The Hobbit by J. R. R. Tolkien",
+        "publisher": "Houghton Mifflin Harcourt (September 18, 2012)",
+        "announce": "Bilbo Baggins is a hobbit who enjoys a comfortable, unambitious life, rarely traveling any farther than his pantry or cellar. But his contentment is disturbed when the wizard Gandalf and a company of dwarves arrive on his doorstep one day to whisk him away on an adventure. They have launched a plot to raid the treasure hoard guarded by Smaug the Magnificent, a large and very dangerous dragon. Bilbo reluctantly joins their quest, unaware that on his journey to the Lonely Mountain he will encounter both a magic ring and a frightening creature known as Gollum.",
+        "image":"book_2.jpg",
+        "taken":"1.10.2017"
+        
+    },
+    {
+        "id":"3",
+        "name":"War and Peace by Leo Tolstoy",
+        "publisher":"Vintage; Reprint edition",
+        "announce":"War and Peace broadly focuses on Napoleon’s invasion of Russia in 1812 and follows three of the most well-known characters in literature: Pierre Bezukhov, the illegitimate son of a count who is fighting for his inheritance and yearning for spiritual fulfillment; Prince Andrei Bolkonsky, who leaves his family behind to fight in the war against Napoleon; and Natasha Rostov, the beautiful young daughter of a nobleman who intrigues both men.",
+        "image":"book_3.jpg",
+         "taken":"2.05.2017"
+    }
+]
