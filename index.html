@@ -16,6 +16,95 @@
     </div>
 
     <script>
+        function formatDate(date) {
+            var dd = date.getDate();
+            if (dd < 10) dd = '0' + dd;
+            var mm = date.getMonth() + 1;
+            if (mm < 10) mm = '0' + mm;
+            var yy = date.getFullYear() % 100;
+            if (yy < 10) yy = '0' + yy;
+            return dd + '.' + mm + '.' + yy;
+        }
+
+        function getTakenDate() {
+            var date = new Date();
+            var year = date.getYear();
+            var day = date.getDate() + 14;
+            var month = date.getMonth();
+            var newDate = new Date(year, month, day);            
+            return newDate;
+        }
+
+        function getBookModal(book) {
+            $('.library').append($('<div/>', {
+                class: 'modal fade bookModal',
+                role: 'dialog'
+            }).append($('<div/>', {
+                class: 'modal-dialog'
+            }).append($('<div/>', {
+                class: 'modal-content'
+            }).append($('<div/>', {
+                class: 'modal-header'
+            }).append($('<h4/>', {
+                text: book.title,
+                class: 'modal-title'
+            }))).append($('<div/>', {
+                class: 'modal-body'
+            }).append($('<p/>', {
+                text: book.description,
+                class: 'message'
+            })).append($('<form/>').append($('<div/>', {
+                class: 'form-group'
+            }).append($('<label/>', {
+                for: 'takeTill',
+                class: 'control-label',
+                text: 'Take Till'
+            })).append($('<input/>', {
+                type: 'text',
+                class: 'form-control',
+                name: 'takeTill',
+                value: formatDate(getTakenDate())
+            })).append($('<label/>', {
+                for: 'userId',
+                class: 'control-label',
+                text: 'Your ID'
+            })).append($('<input/>', {
+                type: 'text',
+                class: 'form-control',
+                name: 'userId'
+            }))))).append($('<div/>', {
+                class: 'modal-footer'
+            }).append($('<button/>', {
+                type: 'button',
+                class: 'btn btn-primary',
+                'data-dismiss': 'modal',
+                text: 'Close'
+            }).click(function () {
+                $(".modal").remove();
+                $('.modal-backdrop').remove();
+            })).append($('<button/>', {
+                type: 'button',
+                class: 'btn btn-primary',
+                'data-dismiss': 'modal',
+                text: 'Take out'
+            }).click(function () {
+                $.ajax({
+                    url: 'book.set.php',
+                    method: 'GET',
+                    data: {
+                        id: book.id,
+                        take_till: $('input[name=takeTill]').val(),
+                        user: $('.userId').text()
+                    },
+                    dataType: 'json',
+                    cache: false
+                }).done(function () {
+                    document.location.href = 'index.html?userId=' + $('.userId').text();
+                })
+            }))))));
+            $('.bookModal').modal('show');
+        }
+
         function getLoginModal() {
             $('.library').append($('<div/>', {
                 class: 'modal fade loginModal',
@@ -123,17 +212,26 @@
                 })).append($('<th/>', {
                     text: 'Title'
                 })).append($('<th/>', {
-                    text: 'Publisher'
+                    text: 'Take out'
                 }))))
                 $.each(books, function (index, book) {
                     if (book) {
+
                         $('.books').append($('<tr/>').append($('<td/>', {
                             text: book.id
-                        })).append($('<td/>', {
-                            text: book.title
-                        })).append($('<td/>', {
-                            text: book.publisher
-                        })))
+                        })).append($('<td/>').append($('<a/>', {
+                            text: book.title,
+                            href: '#'
+                        }).click(function () {
+                            getBookModal(book);
+                        }))).append($('<td/>').append($('<button/>', {
+                            class: (book.taken ? 'btn btn-danger' : 'btn btn-success')
+                        }).append(
+                            $('<i/>', {
+                                class: 'fa ' +
+                                    (book.taken ? 'fa-times' : 'fa-check')
+                            })
+                        ))))
                     }
                 });
                 $('.library').append($('<ul/>', {
@@ -149,7 +247,7 @@
                     }).append($('<a/>', {
                         text: i,
                         'data-page': i,
-                        href:'#'
+                        href: '#'
 
 
                     }).click(function () {
