@@ -31,7 +31,7 @@
             var year = date.getYear();
             var day = date.getDate() + 14;
             var month = date.getMonth();
-            var newDate = new Date(year, month, day);            
+            var newDate = new Date(year, month, day);
             return newDate;
         }
 
@@ -50,9 +50,17 @@
                 class: 'modal-title'
             }))).append($('<div/>', {
                 class: 'modal-body'
-            }).append($('<p/>', {
+            }).append($('<div/>', {
+                class: 'col-md-5'
+            }).append($('<img/>', {
+                src: 'images/' + book.picture,
+                class: 'img-responsive'
+            }))).append($('<p/>', {
                 text: book.description,
                 class: 'message'
+            })).append($('<p/>', {
+                text: 'Publisher: ' + book.publisher,
+                class: 'clearfix'
             })).append($('<form/>').append($('<div/>', {
                 class: 'form-group'
             }).append($('<label/>', {
@@ -71,7 +79,8 @@
             })).append($('<input/>', {
                 type: 'text',
                 class: 'form-control',
-                name: 'userId'
+                name: 'userId',
+                value: $('.userId').text()
             }))))).append($('<div/>', {
                 class: 'modal-footer'
             }).append($('<button/>', {
@@ -86,7 +95,7 @@
                 type: 'button',
                 class: 'btn btn-primary',
                 'data-dismiss': 'modal',
-                text: 'Take out'
+                text: (book.taken ? 'Return a book' : 'Take out a book')
             }).click(function () {
                 $.ajax({
                     url: 'book.set.php',
@@ -94,15 +103,68 @@
                     data: {
                         id: book.id,
                         take_till: $('input[name=takeTill]').val(),
-                        user: $('.userId').text()
+                        user: $('input[name=userId]').val()
                     },
-                    dataType: 'json',
                     cache: false
                 }).done(function () {
-                    document.location.href = 'index.html?userId=' + $('.userId').text();
+                    $(".modal").remove();
+                    $('.modal-backdrop').remove();
+                    getList($('.userId').text(), $('li.disabled > a').text());
+
+                }).fail(function () {
+                    alert('!!!');
                 })
             }))))));
             $('.bookModal').modal('show');
+        }
+
+        function getByNumberModal() {
+            $('.library').append($('<div/>', {
+                class: 'modal fade byNumberModal',
+                role: 'dialog'
+            }).append($('<div/>', {
+                class: 'modal-dialog'
+            }).append($('<div/>', {
+                class: 'modal-content'
+            }).append($('<div/>', {
+                class: 'modal-header'
+            }).append($('<h4/>', {
+                text: 'Log in',
+                class: 'modal-title'
+            }))))));
+                      
+                      
+            $('.modal-content').append($('<div/>', {
+                class: 'modal-body'
+            }).append($('<p/>', {
+                text: 'Please, insert book\'s number',
+                class: 'message'
+            })).append($('<form/>').append($('<div/>', {
+                class: 'form-group'
+            }).append($('<label/>', {
+                for: 'bookNumber',
+                class: 'control-label',
+                text: 'Book number'
+            })).append($('<input/>', {
+                type: 'text',
+                class: 'form-control',
+                name: 'bookNumber'
+            }))))).append($('<div/>', {
+                class: 'modal-footer'
+            }).append($('<button/>', {
+                type: 'button',
+                class: 'btn btn-primary',
+                'data-dismiss': 'modal',
+                text: 'Send'
+            }).click(function () {
+                var bookNumber = $('input[name=bookNumber]').val();
+                $(".modal").remove();
+                $('.modal-backdrop').remove();
+                
+                getByNumber($('.userId').text(), bookNumber);
+
+            })));
+            $('.byNumberModal').modal('show');
         }
 
         function getLoginModal() {
@@ -158,10 +220,8 @@
                     dataType: 'json',
                     cache: false
                 }).done(function (readers) {
-                    console.log(readers);
                     url = 'index.html';
                     $.each(readers, function (index, reader) {
-
                         if ((reader.id == $('input[name=userId]').val()) && (reader.name == $('input[name=userName]').val())) {
                             url = url + '?userId=' + reader.id;
                         }
@@ -180,18 +240,170 @@
                 var userId = url.slice(1).split('&').filter(function (item) {
                     return item.split('=')[0] === 'userId';
                 });
-                console.log('userid=' + userId);
                 return userId.pop().split('=').pop();
             }
-            console.log('userid=' + userId);
             return userId;
+        }
+
+        function getByNumber(userId,bookNumber) {            
+            $('.library').empty();
+            $('.library').append($('<span/>', {
+                text: 'Your ID: '
+            })).append($('<span/>', {
+                class: 'userId',
+                text: userId
+            }))
+            $.ajax({
+                url: 'bynumber.get.php', 
+                method: 'GET',
+                data: {
+                    number: bookNumber
+                },
+                dataType: 'json',
+                cache: false
+            }).done(function (books) { 
+                $('.library').append($('<table/>', {
+                    class: 'table books'
+                }).append($('<tbody/>')).append($('<tr/>').append($('<th/>', {
+                    text: 'Book\'s\xa0ID'
+                })).append($('<th/>', {
+                    text: 'Title'
+                })).append($('<th/>', {
+                    text: 'Take out'
+                }))))
+                $.each(books, function (index, book) {
+                    if (book) {
+
+                        $('.books').append($('<tr/>').append($('<td/>', {
+                            text: book.id
+                        })).append($('<td/>').append($('<a/>', {
+                            text: book.title,
+                            href: '#'
+                        }).click(function () {
+                            getBookModal(book);
+                        }))).append($('<td/>').append($('<button/>', {
+                            class: (book.taken ? 'btn btn-danger' : 'btn btn-success')
+                        }).click(function () {
+
+                            $.ajax({
+                                url: 'book.set.php',
+                                method: 'GET',
+                                data: {
+                                    id: book.id,
+                                    take_till: formatDate(getTakenDate()),
+                                    user: $('.userId').text()
+                                },
+                                cache: false
+                            }).done(function () {
+                                $(".modal").remove();
+                                $('.modal-backdrop').remove();
+                                getList($('.userId').text(), $('li.disabled > a').text());
+
+                            }).fail(function () {
+                                alert('++');
+                            })
+
+
+
+                        }).append(
+                            $('<i/>', {
+                                class: 'fa ' +
+                                    (book.taken ? 'fa-times' : 'fa-check')
+                            })
+                        ))))
+                    }
+                });
+
+            }).fail(function () {
+                alert('Please, insert book number');
+            });
+
+        }
+
+        function getMyBooks(userId) {
+            $('.library').empty();
+            $('.library').append($('<span/>', {
+                text: 'Your ID: '
+            })).append($('<span/>', {
+                class: 'userId',
+                text: userId
+            }))
+            $.ajax({
+                url: 'mybooks.get.php', // 'books.json'
+                method: 'GET',
+                data: {
+                    user: userId
+                },
+                dataType: 'json',
+                cache: false
+            }).done(function (response) {
+                var books = response.books,
+                    pageCount = response.pages;
+                $('.library').append($('<table/>', {
+                    class: 'table books'
+                }).append($('<tbody/>')).append($('<tr/>').append($('<th/>', {
+                    text: 'Book\'s\xa0ID'
+                })).append($('<th/>', {
+                    text: 'Title'
+                })).append($('<th/>', {
+                    text: 'Take out'
+                }))))
+                $.each(books, function (index, book) {
+                    if (book) {
+
+                        $('.books').append($('<tr/>').append($('<td/>', {
+                            text: book.id
+                        })).append($('<td/>').append($('<a/>', {
+                            text: book.title,
+                            href: '#'
+                        }).click(function () {
+                            getBookModal(book);
+                        }))).append($('<td/>').append($('<button/>', {
+                            class: (book.taken ? 'btn btn-danger' : 'btn btn-success')
+                        }).click(function () {
+
+                            $.ajax({
+                                url: 'book.set.php',
+                                method: 'GET',
+                                data: {
+                                    id: book.id,
+                                    take_till: formatDate(getTakenDate()),
+                                    user: $('.userId').text()
+                                },
+                                cache: false
+                            }).done(function () {
+                                $(".modal").remove();
+                                $('.modal-backdrop').remove();
+                                getList($('.userId').text(), $('li.disabled > a').text());
+
+                            }).fail(function () {
+                                alert('++');
+                            })
+
+
+
+                        }).append(
+                            $('<i/>', {
+                                class: 'fa ' +
+                                    (book.taken ? 'fa-times' : 'fa-check')
+                            })
+                        ))))
+                    }
+                });
+
+            }).fail(function () {
+                alert('ошибка mybooks');
+            });
+
         }
 
         function getList(userId, pageNumber = 1) {
             $('.library').empty();
             $('.library').append($('<span/>', {
+                text: 'Your ID: '
+            })).append($('<span/>', {
                 class: 'userId',
-                text: 'Your ID: ' + userId
+                text: userId
             }))
             $.ajax({
                 url: 'books.get.php', // 'books.json'
@@ -226,6 +438,28 @@
                             getBookModal(book);
                         }))).append($('<td/>').append($('<button/>', {
                             class: (book.taken ? 'btn btn-danger' : 'btn btn-success')
+                        }).click(function () {
+
+                            $.ajax({
+                                url: 'book.set.php',
+                                method: 'GET',
+                                data: {
+                                    id: book.id,
+                                    take_till: formatDate(getTakenDate()),
+                                    user: $('.userId').text()
+                                },
+                                cache: false
+                            }).done(function () {
+                                $(".modal").remove();
+                                $('.modal-backdrop').remove();
+                                getList($('.userId').text(), $('li.disabled > a').text());
+
+                            }).fail(function () {
+                                alert('++');
+                            })
+
+
+
                         }).append(
                             $('<i/>', {
                                 class: 'fa ' +
@@ -261,12 +495,11 @@
             });
 
         }
+
         $(function () {
-            $('.container').prepend($('<h1/>', {
-                text: 'Library'
-            }))
+
             var userId = isLogin();
-            console.log('userid=' + userId);
+
 
             if (!userId) {
                 getLoginModal();
@@ -274,6 +507,29 @@
             } else {
                 getList(userId);
             }
+
+            $('.container').append($('<button/>', {
+                class: 'btn btn-success',
+                text: 'Main'
+            }).click(function () {
+                getList(userId)
+            })).append($('<span/>', {
+                text: ' '
+            })).append($('<button/>', {
+                class: 'btn btn-success',
+                text: 'My books'
+            }).click(function () {
+                getMyBooks(userId)
+            })).append($('<span/>', {
+                text: ' '
+            })).append($('<button/>', {
+                class: 'btn btn-success',
+                text: 'Book by number'
+            }).click(function () {
+                getByNumberModal()
+            })).prepend($('<h1/>', {
+                text: 'Library'
+            }))
 
         })
     </script>
