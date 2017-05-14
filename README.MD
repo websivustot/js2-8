@@ -1,0 +1,1 @@
+Library Application - Final task for JavaScript Advanced Development course

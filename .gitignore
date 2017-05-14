@@ -1,3 +1,4 @@
 vendor/
 img/
 book_eng.json
+node_modules/

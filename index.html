@@ -8,6 +8,8 @@
     <script src="vendor/bootstrap/dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="vendor/jquery-toast-plugin/dist/jquery.toast.min.css">
+    <script src="vendor/jquery-toast-plugin/src/jquery.toast.js"></script>
 </head>
 
 <body>
@@ -132,8 +134,8 @@
                 text: 'Log in',
                 class: 'modal-title'
             }))))));
-                      
-                      
+
+
             $('.modal-content').append($('<div/>', {
                 class: 'modal-body'
             }).append($('<p/>', {
@@ -160,7 +162,7 @@
                 var bookNumber = $('input[name=bookNumber]').val();
                 $(".modal").remove();
                 $('.modal-backdrop').remove();
-                
+
                 getByNumber($('.userId').text(), bookNumber);
 
             })));
@@ -245,7 +247,7 @@
             return userId;
         }
 
-        function getByNumber(userId,bookNumber) {            
+        function getByNumber(userId, bookNumber) {
             $('.library').empty();
             $('.library').append($('<span/>', {
                 text: 'Your ID: '
@@ -254,14 +256,14 @@
                 text: userId
             }))
             $.ajax({
-                url: 'bynumber.get.php', 
+                url: 'bynumber.get.php',
                 method: 'GET',
                 data: {
                     number: bookNumber
                 },
                 dataType: 'json',
                 cache: false
-            }).done(function (books) { 
+            }).done(function (books) {
                 $('.library').append($('<table/>', {
                     class: 'table books'
                 }).append($('<tbody/>')).append($('<tr/>').append($('<th/>', {
@@ -315,7 +317,19 @@
                 });
 
             }).fail(function () {
-                alert('Please, insert book number');
+                $.toast({
+                    text: "Please, insert book number",
+                    showHideTransition: 'fade', // It can be plain, fade or slide
+                    bgColor: '#a94442', // Background color for toast
+                    textColor: '#eee', // text color
+                    allowToastClose: false, // Show the close button or not
+                    hideAfter: 2000, // `false` to make it sticky or time in miliseconds to hide after
+                    stack: 5, // `fakse` to show one stack at a time count showing the number of toasts that can be shown at once
+                    textAlign: 'left', // Alignment of text i.e. left, right, center
+                    position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values to position the toast on page
+                    loader: false
+                })
+                
             });
 
         }
