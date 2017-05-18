@@ -134,8 +134,6 @@
                 text: 'Log in',
                 class: 'modal-title'
             }))))));
-
-
             $('.modal-content').append($('<div/>', {
                 class: 'modal-body'
             }).append($('<p/>', {
@@ -162,9 +160,7 @@
                 var bookNumber = $('input[name=bookNumber]').val();
                 $(".modal").remove();
                 $('.modal-backdrop').remove();
-
                 getByNumber($('.userId').text(), bookNumber);
-
             })));
             $('.byNumberModal').modal('show');
         }
@@ -227,7 +223,6 @@
                         if ((reader.id == $('input[name=userId]').val()) && (reader.name == $('input[name=userName]').val())) {
                             url = url + '?userId=' + reader.id;
                         }
-
                     })
                     document.location.href = url;
                 })
@@ -275,7 +270,6 @@
                 }))))
                 $.each(books, function (index, book) {
                     if (book) {
-
                         $('.books').append($('<tr/>').append($('<td/>', {
                             text: book.id
                         })).append($('<td/>').append($('<a/>', {
@@ -286,7 +280,6 @@
                         }))).append($('<td/>').append($('<button/>', {
                             class: (book.taken ? 'btn btn-danger' : 'btn btn-success')
                         }).click(function () {
-
                             $.ajax({
                                 url: 'book.set.php',
                                 method: 'GET',
@@ -304,9 +297,6 @@
                             }).fail(function () {
                                 alert('++');
                             })
-
-
-
                         }).append(
                             $('<i/>', {
                                 class: 'fa ' +
@@ -315,7 +305,6 @@
                         ))))
                     }
                 });
-
             }).fail(function () {
                 $.toast({
                     text: "Please, insert book number",
@@ -328,10 +317,8 @@
                     textAlign: 'left', // Alignment of text i.e. left, right, center
                     position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values to position the toast on page
                     loader: false
-                })
-                
+                })                
             });
-
         }
 
         function getMyBooks(userId) {
@@ -364,7 +351,6 @@
                 }))))
                 $.each(books, function (index, book) {
                     if (book) {
-
                         $('.books').append($('<tr/>').append($('<td/>', {
                             text: book.id
                         })).append($('<td/>').append($('<a/>', {
@@ -375,7 +361,6 @@
                         }))).append($('<td/>').append($('<button/>', {
                             class: (book.taken ? 'btn btn-danger' : 'btn btn-success')
                         }).click(function () {
-
                             $.ajax({
                                 url: 'book.set.php',
                                 method: 'GET',
@@ -389,13 +374,9 @@
                                 $(".modal").remove();
                                 $('.modal-backdrop').remove();
                                 getList($('.userId').text(), $('li.disabled > a').text());
-
                             }).fail(function () {
                                 alert('++');
                             })
-
-
-
                         }).append(
                             $('<i/>', {
                                 class: 'fa ' +
@@ -404,11 +385,9 @@
                         ))))
                     }
                 });
-
             }).fail(function () {
                 alert('ошибка mybooks');
             });
-
         }
 
         function getList(userId, pageNumber = 1) {
@@ -442,7 +421,6 @@
                 }))))
                 $.each(books, function (index, book) {
                     if (book) {
-
                         $('.books').append($('<tr/>').append($('<td/>', {
                             text: book.id
                         })).append($('<td/>').append($('<a/>', {
@@ -453,7 +431,6 @@
                         }))).append($('<td/>').append($('<button/>', {
                             class: (book.taken ? 'btn btn-danger' : 'btn btn-success')
                         }).click(function () {
-
                             $.ajax({
                                 url: 'book.set.php',
                                 method: 'GET',
@@ -471,9 +448,6 @@
                             }).fail(function () {
                                 alert('++');
                             })
-
-
-
                         }).append(
                             $('<i/>', {
                                 class: 'fa ' +
@@ -496,32 +470,22 @@
                         text: i,
                         'data-page': i,
                         href: '#'
-
-
                     }).click(function () {
-
                         getList(userId, $(this).text());
-
                     })))
                 }
             }).fail(function () {
-                alert('ошибка');
+                alert('ошибка получения книг');
             });
-
         }
 
         $(function () {
-
             var userId = isLogin();
-
-
             if (!userId) {
                 getLoginModal();
-
             } else {
                 getList(userId);
             }
-
             $('.container').append($('<button/>', {
                 class: 'btn btn-success',
                 text: 'Main'
@@ -544,7 +508,6 @@
             })).prepend($('<h1/>', {
                 text: 'Library'
             }))
-
         })
     </script>
 

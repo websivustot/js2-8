@@ -9,7 +9,7 @@ $books = json_decode($json);
 $user = isset($_GET['user']) ? (int) $_GET['user'] : null;
 
 if ($user) {
-    $result = [];
+    $result = array();
     foreach(array_keys($books) as $key) {
         if ($books[$key]->taken_by === $user) { //unset($books[$key]);
             $result[] = $books[$i];
