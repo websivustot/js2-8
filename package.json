@@ -1,0 +1,26 @@
+{
+  "name": "geekbrains",
+  "version": "1.0.0",
+  "description": "Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "hermione"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/websivustot/js2-8.git"
+  },
+  "keywords": [
+    "library"
+  ],
+  "author": "Alex",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/websivustot/js2-8/issues"
+  },
+  "homepage": "https://github.com/websivustot/js2-8#readme",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "hermione": "^0.36.0"
+  }
+}
