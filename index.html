@@ -317,7 +317,7 @@
                     textAlign: 'left', // Alignment of text i.e. left, right, center
                     position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values to position the toast on page
                     loader: false
-                })                
+                })
             });
         }
 
@@ -490,21 +490,34 @@
                 class: 'btn btn-success',
                 text: 'Main'
             }).click(function () {
-                getList(userId)
+                if (userId) {
+                    getList(userId)
+                } else {
+                    getLoginModal();
+                }
             })).append($('<span/>', {
                 text: ' '
             })).append($('<button/>', {
                 class: 'btn btn-success',
                 text: 'My books'
             }).click(function () {
-                getMyBooks(userId)
+                if (userId) {
+                    getMyBooks(userId)
+                } else {
+                    getLoginModal();
+                }
             })).append($('<span/>', {
                 text: ' '
             })).append($('<button/>', {
                 class: 'btn btn-success',
                 text: 'Book by number'
             }).click(function () {
-                getByNumberModal()
+                if (userId) {
+                    getByNumberModal()
+                } else {
+                    getLoginModal();
+                }
+                
             })).prepend($('<h1/>', {
                 text: 'Library'
             }))
